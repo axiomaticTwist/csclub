@@ -12,8 +12,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace CalendarQuickstart {
-	class Calendar : MonoBehaviour {
+	public class GoogleCalendar : MonoBehaviour {
+		public Events events;
+
 		// If modifying these scopes, delete your previously saved credentials
 		// at ~/.credentials/calendar-dotnet-quickstart.json
 		static string[] Scopes = { CalendarService.Scope.CalendarReadonly };
@@ -49,11 +50,11 @@ namespace CalendarQuickstart {
 			request.TimeMin = WeekAtGlance.GetStart();
 			request.ShowDeleted = false;
 			request.SingleEvents = true;
-			request.MaxResults = 10;
+			request.MaxResults = 100;
 			request.OrderBy = EventsResource.ListRequest.OrderByEnum.StartTime;
 
 			// List events.
-			Events events = request.Execute();
+			events = request.Execute();
 			Debug.Log("Upcoming events:");
 			if (events.Items != null && events.Items.Count > 0) {
 				foreach (var eventItem in events.Items) {
@@ -69,8 +70,11 @@ namespace CalendarQuickstart {
 			}
 	
 		}
+
+		public IList<Google.Apis.Calendar.v3.Data.Event> GetEvents() {
+			return events.Items;
+		}
 		
 
 		
 	}
-}
