@@ -63,7 +63,7 @@ public class GoogleCalendar : MonoBehaviour {
 				request.TimeMin = DateTime.Today;
 				request.ShowDeleted = false;
 				request.SingleEvents = true;
-				request.MaxResults = 100;
+				request.MaxResults = 50;
 				request.OrderBy = EventsResource.ListRequest.OrderByEnum.StartTime;
 
 				// List events.
@@ -71,12 +71,6 @@ public class GoogleCalendar : MonoBehaviour {
 
 				if (events.Items != null && events.Items.Count > 0) {
 					calendarEventList.Add(events.Items);
-					Debug.Log("Event List Added");
-
-					foreach (Event e in events.Items) {
-						Debug.Log(e.Summary);
-
-					}
 					
 				} else {
 					Debug.Log("No upcoming events found.");

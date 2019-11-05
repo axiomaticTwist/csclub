@@ -27,6 +27,7 @@ public class PopulateCalendar : MonoBehaviour {
 	public Font boldFont;
 	public Text monthText;
 	public GoogleCalendar calendar;
+	public Image title;
 
 	DateTime firstDayOfWeek;
 	DateTime dayInWeek;
@@ -36,7 +37,7 @@ public class PopulateCalendar : MonoBehaviour {
 
 
 	// Store date of event and string summary
-	internal Dictionary<DateTime, ArrayList> events = new Dictionary<DateTime, ArrayList>();
+	internal Dictionary<DateTime, List<Event>> events = new Dictionary<DateTime, List<Event>>();
 	
 
 	// Start is called before the first frame update
@@ -47,10 +48,7 @@ public class PopulateCalendar : MonoBehaviour {
 	public void SetEvents() {
 		for (int i = 0; i < calendar.calendars.Length; i++) {
 			if (calendar.calendars[i].check) {
-				Debug.Log(true + " " + i);
-
 				foreach (Event e in calendar.GetEvents(i)) {
-					Debug.Log("Event found");
 
 					string when = e.Start.DateTime.ToString();
 					if (String.IsNullOrEmpty(when)) {
@@ -58,10 +56,10 @@ public class PopulateCalendar : MonoBehaviour {
 					}
 
 					if (!events.ContainsKey(DateTime.Parse(when))) {
-						events.Add(DateTime.Parse(when), new ArrayList());
+						events.Add(DateTime.Parse(when), new List<Event>());
 					}
 
-					events[DateTime.Parse(when)].Add(e.Summary);
+					events[DateTime.Parse(when)].Add(e);
 				}
 			}
 
@@ -81,6 +79,7 @@ public class PopulateCalendar : MonoBehaviour {
 		SetEvents();
 
 		monthText.text = DateTimeFormatInfo.CurrentInfo.GetMonthName(desiredDay.Month) + " " + desiredDay.Year;
+		title.color = Color.HSVToRGB((desiredDay.Month - 1) * 30f / 360f, 0.6f, 0.78f);
 
 		// Set the first day of the month
 		firstDayOfWeek = FirstDayOfWeekUtility.GetFirstDateOfWeek(new DateTime(desiredDay.Year, desiredDay.Month, 1));

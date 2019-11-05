@@ -6,7 +6,13 @@ public class EventPanel : MonoBehaviour {
 	public Text eventDesc;
 	public Text eventLoc;
 
+	public Text eventDay;
+	public Text eventMonth;
+	public Text eventYear;
+
+	public Image eventDateBG;
+
 	public void Exit() {
-		transform.gameObject.SetActive(false);
+		GetComponent<Animator>().Play("slide out");
 	}
 }

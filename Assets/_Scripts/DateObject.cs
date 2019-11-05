@@ -11,7 +11,6 @@ public class DateObject : MonoBehaviour {
 
 	public void ShowInfo() {
 		getInfo.GetDayInfo(date);
-		//Debug.Log(date);
 	}
 
 	public void SetDate(DateTime _date) {
