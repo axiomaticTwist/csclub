@@ -6,11 +6,12 @@ public class DateObject : MonoBehaviour {
 	private GetInfo getInfo;
 
 	private void Start() {
-		getInfo = GameObject.Find("Info Panel").GetComponent<GetInfo>();
+		getInfo = GameObject.Find("Info Content Panel").GetComponent<GetInfo>();
 	}
 
 	public void ShowInfo() {
 		getInfo.GetDayInfo(date);
+		//Debug.Log(date);
 	}
 
 	public void SetDate(DateTime _date) {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System;
 using System.Globalization;
 using UnityEngine;
+using Event = Google.Apis.Calendar.v3.Data.Event;
 using UnityEngine.UI;
 
 public static class FirstDayOfWeekUtility {
@@ -40,34 +41,44 @@ public class PopulateCalendar : MonoBehaviour {
 
 	// Start is called before the first frame update
 	private void Start() {
-		
-
-		foreach(Google.Apis.Calendar.v3.Data.Event e in calendar.GetEvents()) {
-			string when = e.Start.DateTime.ToString();
-			if (String.IsNullOrEmpty(when)) {
-				when = e.Start.Date;
-			}
-
-			if (!events.ContainsKey(DateTime.Parse(when))) {
-				events.Add(DateTime.Parse(when), new ArrayList());
-			}
-
-			events[DateTime.Parse(when)].Add(e.Summary);
-		}
-
-		foreach (string s in events[new DateTime(2019, 12, 7)])
-			Debug.Log(s);
-
 		RefreshCalendar();
+	}
+
+	public void SetEvents() {
+		for (int i = 0; i < calendar.calendars.Length; i++) {
+			if (calendar.calendars[i].check) {
+				Debug.Log(true + " " + i);
+
+				foreach (Event e in calendar.GetEvents(i)) {
+					Debug.Log("Event found");
+
+					string when = e.Start.DateTime.ToString();
+					if (String.IsNullOrEmpty(when)) {
+						when = e.Start.Date;
+					}
+
+					if (!events.ContainsKey(DateTime.Parse(when))) {
+						events.Add(DateTime.Parse(when), new ArrayList());
+					}
+
+					events[DateTime.Parse(when)].Add(e.Summary);
+				}
+			}
+
+		}
 	}
 	
 
-	void RefreshCalendar() {
+	public void RefreshCalendar() {
 		foreach (Transform week in weeks) {
 			foreach (Transform child in week) {
 				Destroy(child.gameObject);
 			}
 		}
+
+		events.Clear();
+
+		SetEvents();
 
 		monthText.text = DateTimeFormatInfo.CurrentInfo.GetMonthName(desiredDay.Month) + " " + desiredDay.Year;
 
@@ -75,23 +86,20 @@ public class PopulateCalendar : MonoBehaviour {
 		firstDayOfWeek = FirstDayOfWeekUtility.GetFirstDateOfWeek(new DateTime(desiredDay.Year, desiredDay.Month, 1));
 		dayInWeek = firstDayOfWeek;
 
-		Debug.Log(firstDayOfWeek);
-
 		for (int j = 0; j < weeks.Length; j++) {
 			for (int i = 0; i < 7; i++) {				
-				//Debug.Log(dayInWeek);
-
 				GameObject dayItem = Instantiate(dayPrefab, weeks[j]);
 				dayItem.GetComponent<DateObject>().SetDate(dayInWeek);
 
+				// If the day is not today
 				if (DateTime.Today != dayInWeek) {
-					// Set each day's text
+					// If the day is not in the current month
 					if (dayInWeek.Month == desiredDay.Month)
 						dayItem.GetComponentInChildren<Text>().color = Color.black;
 					else
 						dayItem.GetComponentInChildren<Text>().color = new Color32(164,164,164,100);
 
-
+					// If the day is today, set its color to white
 					dayItem.GetComponent<Image>().color = Color.white;
 
 					
@@ -106,6 +114,7 @@ public class PopulateCalendar : MonoBehaviour {
 				dayItem.GetComponentInChildren<Text>().text = dayInWeek.Day.ToString();
 				dayInWeek = dayInWeek.AddDays(1);
 			}
+
 			firstDayOfWeek = firstDayOfWeek.AddDays(7);
 		}
 		
