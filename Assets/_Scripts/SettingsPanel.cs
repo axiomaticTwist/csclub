@@ -7,19 +7,12 @@ public class SettingsPanel : MonoBehaviour {
 	public PopulateCalendar popCal;
 	public GetInfo getInfo;
 
-	// Start is called before the first frame update
-	void Start() {
-
-	}
-
-	// Update is called once per frame
-	void Update() {
-
-	}
-
+	// Called on button pressed
 	public void Exit() {
+		// Hides the interface
 		gameObject.SetActive(false);
 
+		// Refreshes all the events
 		googleCal.Repopulate();
 		popCal.RefreshCalendar();
 		getInfo.Refresh();

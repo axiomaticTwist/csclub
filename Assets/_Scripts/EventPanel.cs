@@ -12,6 +12,8 @@ public class EventPanel : MonoBehaviour {
 
 	public Image eventDateBG;
 
+	// Called on button pressed
+	// Plays the slide out animation
 	public void Exit() {
 		GetComponent<Animator>().Play("slide out");
 	}
