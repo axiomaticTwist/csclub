@@ -7,6 +7,10 @@ public class SettingsPanel : MonoBehaviour {
 	public PopulateCalendar popCal;
 	public GetInfo getInfo;
 
+	public void Show() {
+		gameObject.SetActive(true);
+	}
+
 	// Called on button pressed
 	public void Exit() {
 		// Hides the interface

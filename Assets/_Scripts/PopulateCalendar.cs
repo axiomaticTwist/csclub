@@ -6,6 +6,17 @@ using UnityEngine;
 using Event = Google.Apis.Calendar.v3.Data.Event;
 using UnityEngine.UI;
 
+// Store the event and the event's calendar
+public struct EventAndCalendar {
+	public Event e;
+	public string calendarName;
+
+	public EventAndCalendar(Event _e, string _calendarName) {
+		e = _e;
+		calendarName = _calendarName;
+	}
+}
+
 // Gets the first date in the week, given a particular day
 public static class FirstDayOfWeekUtility {
 	public static DateTime GetFirstDayOfWeek(DateTime dayInWeek) {
@@ -38,7 +49,7 @@ public class PopulateCalendar : MonoBehaviour {
 
 
 	// Store date of event and string summary
-	internal Dictionary<DateTime, List<Event>> events = new Dictionary<DateTime, List<Event>>();
+	internal Dictionary<DateTime, List<EventAndCalendar>> events = new Dictionary<DateTime, List<EventAndCalendar>>();
 	
 
 	// Start is called before the first frame update
@@ -58,16 +69,19 @@ public class PopulateCalendar : MonoBehaviour {
 					string when = e.Start.DateTime.ToString();
 					if (String.IsNullOrEmpty(when)) {
 						when = e.Start.Date;
+						Debug.Log("Name: " + e.Summary + " | " + "Date: " + DateTime.Parse(when));
+					} else {
+						Debug.Log("Name: " + e.Summary + " | " + "Date: " + DateTime.Parse(when));
 					}
 
 					// If the start date is not already in this dictionary
-					if (!events.ContainsKey(DateTime.Parse(when))) {
+					if (!events.ContainsKey(DateTime.Parse(DateTime.Parse(when).ToShortDateString()))) {
 						// Start a new list of events at a given date
-						events.Add(DateTime.Parse(when), new List<Event>());
+						events.Add(DateTime.Parse(DateTime.Parse(when).ToShortDateString()), new List<EventAndCalendar>());
 					}
 
 					// Insert into the event list given a date
-					events[DateTime.Parse(when)].Add(e);
+					events[DateTime.Parse(DateTime.Parse(when).ToShortDateString())].Add(new EventAndCalendar(e, calendar.calendarNames[i]));
 				}
 			}
 

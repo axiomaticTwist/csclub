@@ -1,9 +1,7 @@
 ﻿using Google.Apis.Calendar.v3;
 using Google.Apis.Calendar.v3.Data;
 using Google.Apis.Services;
-using Google.Apis.Util.Store;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -22,6 +20,8 @@ public class GoogleCalendar : MonoBehaviour {
 
 	// Which calendars to use
 	public CheckedString[] calendars;
+
+	public List<string> calendarNames = new List<string>();
 
 	// Multiple lists of events stored in a single list
 	private List<IList<Event>> calendarEventList = new List<IList<Event>>();
@@ -42,7 +42,11 @@ public class GoogleCalendar : MonoBehaviour {
 		foreach(CheckedString s in calendars) {
 			// Call the Google API service
 			EventsResource.ListRequest requestNames = service.Events.List(s.name);
+			requestNames.MaxResults = 1;
 			Events e = requestNames.Execute();
+
+			// Add the name of the calendar to the calendar name list
+			calendarNames.Add(e.Summary);
 
 			// Create a checkbox for every calendar
 			GameObject item = Instantiate(calendarItemPrefab, calendarsPanel);
@@ -86,7 +90,6 @@ public class GoogleCalendar : MonoBehaviour {
 				// If we have more than one event, add the event list to an array
 				if (events.Items != null && events.Items.Count > 0) {
 					calendarEventList.Add(events.Items);
-					
 				} else {
 					Debug.Log("No upcoming events found.");
 				}

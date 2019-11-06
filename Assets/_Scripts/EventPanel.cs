@@ -10,6 +10,8 @@ public class EventPanel : MonoBehaviour {
 	public Text eventMonth;
 	public Text eventYear;
 
+	public Text eventCalendar;
+
 	public Image eventDateBG;
 
 	// Called on button pressed

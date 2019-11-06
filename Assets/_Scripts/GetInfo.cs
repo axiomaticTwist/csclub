@@ -20,16 +20,19 @@ public class GetInfo : MonoBehaviour {
 		// If the date that's been clicked on has events
 		if (calendar.events.ContainsKey(_date)) {
 			// Set the starting hue to 20 degrees
-			int h = 20;
+			float h = 20;
 
 			// Loop through the events
-			foreach (Event e in calendar.events[_date]) {
+			foreach (EventAndCalendar e in calendar.events[_date]) {
 				// Create a new information item
 				GameObject item = Instantiate(infoPrefab, transform);
 				// Set its title to the title of the event
-				item.GetComponentInChildren<Text>().text = e.Summary.ToString();
+				item.GetComponentInChildren<Text>().text = e.e.Summary.ToString();
 				// Add an event listener when the information item is clicked, passing in its current index
 				item.GetComponent<Button>().onClick.AddListener(() => DisplayEventDetails(item.transform.GetSiblingIndex()));
+
+				// TODO: Fix the hue after the 8th element
+				Debug.Log(((_date.Month - 1) * 30f + h) / 360f);
 				// Set its color based off of the current month
 				item.GetComponent<Image>().color = Color.HSVToRGB(((_date.Month - 1) * 30f + h) / 360f, 0.6f, 0.78f);
 				h += 15;
@@ -42,10 +45,19 @@ public class GetInfo : MonoBehaviour {
 		// Play a cool animation
 		eventPanel.GetComponent<Animator>().Play("slide in");
 		// Get the given event
-		Event _event = calendar.events[date][index];
+		Event _event = calendar.events[date][index].e;
 
 		// Set its title to the event's title
 		eventPanel.eventTitle.text = _event.Summary.ToString();
+
+		// Get the calendar name given an event index
+		eventPanel.eventCalendar.text = calendar.events[date][index].calendarName;
+
+		// Get the start time
+		string when = _event.Start.DateTime.ToString();
+		if (String.IsNullOrEmpty(when)) {
+			when = _event.Start.Date;
+		}
 
 		// Set the location to the event's location, default none
 		try {
@@ -54,18 +66,20 @@ public class GetInfo : MonoBehaviour {
 			eventPanel.eventLoc.text = "No location specified";
 		}
 
-		// Set the description to the event's description, default none
+		// Set the description to the event's description, default is the time of the event
 		try {
-			eventPanel.eventDesc.text = _event.Description.ToString();
+			// If the date of the event does not equal 12 AM, then add the time afterwards
+			if (!DateTime.Parse(when).ToShortTimeString().Equals(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0).ToShortTimeString())) {
+				eventPanel.eventDesc.text = _event.Description.ToString() + " " + DateTime.Parse(when).ToShortTimeString();
+			} else {
+				eventPanel.eventDesc.text = _event.Description.ToString();
+			}
+
 		} catch (Exception e) {
-			eventPanel.eventDesc.text = "No description given";
+			eventPanel.eventDesc.text = DateTime.Parse(when).ToShortTimeString();
 		}
 
-		// Get the start time
-		string when = _event.Start.DateTime.ToString();
-		if (String.IsNullOrEmpty(when)) {
-			when = _event.Start.Date;
-		}
+		
 		DateTime day = DateTime.Parse(when);
 
 		// Set the top date to the event date
