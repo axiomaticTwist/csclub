@@ -131,7 +131,7 @@ public class PopulateCalendar : MonoBehaviour {
 						// Otherwise the day is not in the current month, so set its color to gray
 						dayItem.GetComponentInChildren<Text>().color = new Color32(164,164,164,100);
 
-					// If the day is today, set its color to white
+					// If the day is not today, set its color to white
 					dayItem.GetComponent<Image>().color = Color.white;
 
 					

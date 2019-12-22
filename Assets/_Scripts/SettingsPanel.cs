@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class SettingsPanel : MonoBehaviour {
-	public GoogleCalendar googleCal;
-	public PopulateCalendar popCal;
+	public Calendar calendar;
 	public GetInfo getInfo;
 
 	public void Show() {
@@ -17,8 +16,9 @@ public class SettingsPanel : MonoBehaviour {
 		gameObject.SetActive(false);
 
 		// Refreshes all the events
-		googleCal.Repopulate();
-		popCal.RefreshCalendar();
+		calendar.RefreshCalendar(true);
+		calendar.PopulateCalendar();
+		calendar.DisplayCalendar();
 		getInfo.Refresh();
 		
 	}
