@@ -213,7 +213,7 @@ public class Calendar : MonoBehaviour {
 
 			// If the checkbox is ticked
 			if (c.useCalendar) {
-				request.TimeMin = FirstDayOfWeekUtility.GetFirstDateOfWeek(desiredDate.AddMonths(-1));
+				request.TimeMin = FirstDayOfWeekUtility.GetFirstDateOfWeek(DateTime.Today.AddMonths(-1));
 				request.ShowDeleted = false;
 				request.SingleEvents = true;
 				request.MaxResults = 500;
