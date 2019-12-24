@@ -2,7 +2,6 @@
 
 public class SettingsPanel : MonoBehaviour {
 	public Calendar calendar;
-	public GetInfo getInfo;
 	public GameObject loadingPanel;
 
 	public void Show() {
@@ -18,8 +17,6 @@ public class SettingsPanel : MonoBehaviour {
 		calendar.StartCoroutine(calendar.LoadCalendar());
 
 		loadingPanel.SetActive(true);
-
-		getInfo.Refresh();
 		
 	}
 }

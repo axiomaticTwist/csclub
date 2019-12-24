@@ -10,6 +10,22 @@ using Event = Google.Apis.Calendar.v3.Data.Event;
 using System.Threading;
 using System.Collections;
 
+// Gets the first date in the week, given a particular day
+public static class FirstDayOfWeekUtility {
+	public static DateTime GetFirstDayOfWeek(DateTime dayInWeek) {
+		return GetFirstDateOfWeek(dayInWeek);
+	}
+
+	public static DateTime GetFirstDateOfWeek(DateTime dayInWeek) {
+		DayOfWeek firstDay = CultureInfo.CurrentCulture.DateTimeFormat.FirstDayOfWeek;
+		DateTime firstDayInWeek = dayInWeek.Date;
+		while (firstDayInWeek.DayOfWeek != firstDay)
+			firstDayInWeek = firstDayInWeek.AddDays(-1);
+
+		return firstDayInWeek;
+	}
+}
+
 [Serializable]
 public struct CalendarURL {
 	public string url;
