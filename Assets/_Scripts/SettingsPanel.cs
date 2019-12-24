@@ -1,10 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class SettingsPanel : MonoBehaviour {
 	public Calendar calendar;
 	public GetInfo getInfo;
+	public GameObject loadingPanel;
 
 	public void Show() {
 		gameObject.SetActive(true);
@@ -16,9 +15,10 @@ public class SettingsPanel : MonoBehaviour {
 		gameObject.SetActive(false);
 
 		// Refreshes all the events
-		calendar.RefreshCalendar(true);
-		calendar.PopulateCalendar();
-		calendar.DisplayCalendar();
+		calendar.StartCoroutine(calendar.LoadCalendar());
+
+		loadingPanel.SetActive(true);
+
 		getInfo.Refresh();
 		
 	}

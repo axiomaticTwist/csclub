@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Event = Google.Apis.Calendar.v3.Data.Event;
+using System.Threading;
+using System.Collections;
 
 [Serializable]
 public struct CalendarURL {
@@ -110,6 +112,8 @@ public class Calendar : MonoBehaviour {
 	public GameObject calendarItemPrefab;
 	public Transform calendarsPanel;
 
+	public GameObject loadingPanel;
+
 	private List<DayObj> days = new List<DayObj>();
 
 	private bool generated = false;
@@ -117,9 +121,8 @@ public class Calendar : MonoBehaviour {
 	#endregion
 
 	private void Start() {
-		RefreshCalendar(true);
 		PopulateCalendar();
-		DisplayCalendar();
+		StartCoroutine(LoadCalendar());
 	}
 
 	public void DisplayCalendar() {
@@ -221,7 +224,7 @@ public class Calendar : MonoBehaviour {
 			} else {
 				request.MaxResults = 1;
 			}
-
+			
 			// Execute the request
 			Events events = request.Execute();
 
@@ -236,25 +239,67 @@ public class Calendar : MonoBehaviour {
 				item.GetComponentInChildren<Toggle>().onValueChanged.AddListener(delegate { UpdateCalendarURL(item.GetComponentInChildren<Toggle>().isOn, item.transform.GetSiblingIndex()); });
 
 			}
-			
 
 			if (c.useCalendar && events.Items != null && events.Items.Count > 0) {
 				foreach(Event e in events.Items) {
-					string when = e.Start.DateTime.ToString();
-					if (String.IsNullOrEmpty(when)) {
-						when = e.Start.Date;
+
+					string start = e.Start.DateTime.ToString();
+					string end = e.End.DateTime.ToString();
+
+
+
+
+					// If the date doesn't is in a bad form, fix it
+					if (String.IsNullOrEmpty(start)) {
+						start = e.Start.Date;
 					}
 
-					DateTime adjustedWhen = DateTime.Parse(when);
-
-					if (!eventsOnDay.ContainsKey(adjustedWhen)) {
-						// Create a new list of EventInfos
-						eventsOnDay.Add(adjustedWhen, new List<EventInfo>());
+					if (String.IsNullOrEmpty(end)) {
+						end = e.End.Date;
 					}
 
-					// Insert into the event list given a date
-					eventsOnDay[adjustedWhen].Add(new EventInfo(events.Summary, e));
+					DateTime adjustedStart = DateTime.Parse(start);
+					DateTime adjustedEnd = DateTime.Parse(end);
+
+					//Debug.Log("Event: " + e.Summary + " Start: " + adjustedStart + " End: " + adjustedEnd + " Total Days: " + Mathf.Abs((adjustedStart - adjustedEnd).Days));
+					//Debug.Log();
+
+
+					//Debug.Log("Title: " + e.Summary + " | Start: " + adjustedStart + " | End: " + end);
+
+
+
+					/*
+					if (!eventsOnDay.ContainsKey(adjustedEnd)) {
+						eventsOnDay.Add(adjustedEnd, new List<EventInfo>());
+
+					}*/
+					int difference = Mathf.Abs((adjustedStart - adjustedEnd).Days);
+
+					// If difference between event start and end date is greater than 1, do stuff
+					if (difference > 1) {
+						for (int i = 0; i < difference; i++) {
+							// If the day doesn't already contain events
+							if (!eventsOnDay.ContainsKey(adjustedStart.AddDays(i))) {
+								// Create a new list of EventInfos
+								eventsOnDay.Add(adjustedStart.AddDays(i), new List<EventInfo>());
+							}
+
+							eventsOnDay[adjustedStart.AddDays(i)].Add(new EventInfo(events.Summary, e));
+						}
+					} else {
+						// If the day doesn't already contain events
+						if (!eventsOnDay.ContainsKey(adjustedStart)) {
+							// Create a new list of EventInfos
+							eventsOnDay.Add(adjustedStart, new List<EventInfo>());
+						}
+
+						// Insert into the event list given a date
+						eventsOnDay[adjustedStart].Add(new EventInfo(events.Summary, e));
+					}
+
 					
+					//eventsOnDay[adjustedEnd].Add(new EventInfo(events.Summary, e));
 				}
 
 			} else {
@@ -349,7 +394,7 @@ public class Calendar : MonoBehaviour {
 		}
 
 
-		DateTime day = DateTime.Parse(when);
+		DateTime day = DateTime.Parse(date.ToString());
 
 		// Set the top date to the event date
 		eventPanel.eventDay.text = day.Day.ToString();
@@ -357,6 +402,22 @@ public class Calendar : MonoBehaviour {
 		eventPanel.eventYear.text = day.Year.ToString();
 
 		eventPanel.eventDateBG.color = Color.HSVToRGB((day.Month - 1) * 30f / 360f, 0.6f, 0.78f);
+	}
+
+	internal IEnumerator LoadCalendar() {
+		bool done = false;
+
+		RefreshCalendar(true);
+		new Thread(() => {
+			PopulateCalendar();
+			done = true;
+		}).Start();
+		
+		while (!done)
+			yield return null;
+
+		loadingPanel.SetActive(false);
+		DisplayCalendar();
 	}
 
 	// Deletes every child

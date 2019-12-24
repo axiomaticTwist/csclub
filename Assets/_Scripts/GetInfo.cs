@@ -32,7 +32,7 @@ public class GetInfo : MonoBehaviour {
 				item.GetComponent<Button>().onClick.AddListener(() => DisplayEventDetails(item.transform.GetSiblingIndex()));
 
 				// TODO: Fix the hue after the 8th element
-				Debug.Log(((_date.Month - 1) * 30f + h) / 360f);
+				// Debug.Log(((_date.Month - 1) * 30f + h) / 360f);
 				// Set its color based off of the current month
 				item.GetComponent<Image>().color = Color.HSVToRGB(((_date.Month - 1) * 30f + h) / 360f, 0.6f, 0.78f);
 				h += 15;
@@ -42,6 +42,8 @@ public class GetInfo : MonoBehaviour {
 	
 	// Show the event details at a given index
 	public void DisplayEventDetails(int index) {
+		Debug.Log("a" + date);
+
 		// Play a cool animation
 		eventPanel.GetComponent<Animator>().Play("slide in");
 		// Get the given event
@@ -80,10 +82,11 @@ public class GetInfo : MonoBehaviour {
 		}
 
 		
-		DateTime day = DateTime.Parse(when);
+		DateTime day = DateTime.Parse(date.ToString());
 
+		Debug.Log(date);
 		// Set the top date to the event date
-		eventPanel.eventDay.text = day.Day.ToString();
+		eventPanel.eventDay.text = date.Day.ToString();
 		eventPanel.eventMonth.text = DateTimeFormatInfo.CurrentInfo.GetMonthName(day.Month).ToUpper();
 		eventPanel.eventYear.text = day.Year.ToString();
 
