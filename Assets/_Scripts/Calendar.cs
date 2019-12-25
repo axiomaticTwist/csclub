@@ -89,6 +89,7 @@ public class Calendar : MonoBehaviour {
 	#region Backend
 	[Header("Calendars")]
 	public CalendarURL[] calendars;
+	private string[] calendarNames;
 
 	private Dictionary<DateTime, List<EventInfo>> eventsOnDay = new Dictionary<DateTime, List<EventInfo>>();
 
@@ -106,7 +107,7 @@ public class Calendar : MonoBehaviour {
 
 	#region Visual
 	DateTime desiredDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
-	
+
 	[Header("Day Prefab")]
 	public Transform dayPrefab;
 
@@ -133,12 +134,15 @@ public class Calendar : MonoBehaviour {
 	private List<DayObj> days = new List<DayObj>();
 
 	private bool generated = false;
-	
+
 	#endregion
 
 	private void Start() {
-		PopulateCalendar();
-		StartCoroutine(LoadCalendar());
+		DisplayCalendar();
+		calendarNames = new string[calendars.Length];
+
+		StartCoroutine(GenerateCalendarCheckboxes());
+		StartCoroutine(LoadCalendar(false));
 	}
 
 	public void DisplayCalendar() {
@@ -156,13 +160,13 @@ public class Calendar : MonoBehaviour {
 		DateTime nextMonth;
 
 		DateTime curDay;
-		
+
 		// TODO: Bugfix: the utility gets the first day of the week from the previous year when updating to a new year
 		prevMonth = FirstDayOfWeekUtility.GetFirstDateOfWeek(desiredDate.AddMonths(-1));
 		curMonth = FirstDayOfWeekUtility.GetFirstDateOfWeek(desiredDate);
 		nextMonth = FirstDayOfWeekUtility.GetFirstDateOfWeek(desiredDate.AddMonths(1));
 
-		DateTime[] firstDayOfMonth = {prevMonth, curMonth, nextMonth};
+		DateTime[] firstDayOfMonth = { prevMonth, curMonth, nextMonth };
 
 		// Loop through each month
 		for (int month = 0; month < 3; month++) {
@@ -224,6 +228,40 @@ public class Calendar : MonoBehaviour {
 		calendars[index].useCalendar = active;
 	}
 
+
+
+	public IEnumerator GenerateCalendarCheckboxes() {
+		bool done = false;
+
+		new Thread(() => {
+			for (int i = 0; i < calendars.Length; i++) {
+				EventsResource.ListRequest request = service.Events.List(calendars[i].url);
+
+				request.MaxResults = 1;
+
+				Events e = request.Execute();
+
+				calendarNames[i] = e.Summary;
+			}
+			done = true;
+		}).Start();
+
+		while (!done) {
+			yield return null;
+		}
+
+		foreach (string calendarName in calendarNames) {
+			// Create a checkbox for every calendar
+			GameObject item = Instantiate(calendarItemPrefab, calendarsPanel);
+			// Set the text of the checkbox to the name of the calendar
+			item.GetComponentInChildren<Text>().text = calendarName;
+
+			// Add an event listener when the checkbox is ticked
+			// Update the calendar to either activate or deactivate the calendar at the given index
+			item.GetComponentInChildren<Toggle>().onValueChanged.AddListener(delegate { UpdateCalendarURL(item.GetComponentInChildren<Toggle>().isOn, item.transform.GetSiblingIndex()); });
+		}
+	}
+
 	public void PopulateCalendar() {
 		// Loop through every calendar URL given
 		foreach (CalendarURL c in calendars) {
@@ -235,104 +273,67 @@ public class Calendar : MonoBehaviour {
 				request.TimeMin = FirstDayOfWeekUtility.GetFirstDateOfWeek(DateTime.Today.AddMonths(-1));
 				request.ShowDeleted = false;
 				request.SingleEvents = true;
-				request.MaxResults = 500;
+				request.MaxResults = 200;
 				request.OrderBy = EventsResource.ListRequest.OrderByEnum.StartTime;
-			} else {
-				request.MaxResults = 1;
-			}
-			
-			// Execute the request
-			Events events = request.Execute();
 
-			if (!generated) {
-				// Create a checkbox for every calendar
-				GameObject item = Instantiate(calendarItemPrefab, calendarsPanel);
-				// Set the text of the checkbox to the name of the calendar
-				item.GetComponentInChildren<Text>().text = events.Summary;
+				// Execute the request
+				Events events = request.Execute();
+				if (events.Items != null && events.Items.Count > 0) {
+					foreach (Event e in events.Items) {
 
-				// Add an event listener when the checkbox is ticked
-				// Update the calendar to either activate or deactivate the calendar at the given index
-				item.GetComponentInChildren<Toggle>().onValueChanged.AddListener(delegate { UpdateCalendarURL(item.GetComponentInChildren<Toggle>().isOn, item.transform.GetSiblingIndex()); });
+						string start = e.Start.DateTime.ToString();
+						string end = e.End.DateTime.ToString();
 
-			}
+						// If the date doesn't is in a bad form, fix it
+						if (String.IsNullOrEmpty(start)) {
+							start = e.Start.Date;
+						}
 
-			if (c.useCalendar && events.Items != null && events.Items.Count > 0) {
-				foreach(Event e in events.Items) {
+						if (String.IsNullOrEmpty(end)) {
+							end = e.End.Date;
+						}
 
-					string start = e.Start.DateTime.ToString();
-					string end = e.End.DateTime.ToString();
+						DateTime adjustedStart = DateTime.Parse(start);
+						DateTime adjustedEnd = DateTime.Parse(end);
 
+						int difference = Mathf.Abs((adjustedStart - adjustedEnd).Days);
 
+						// If difference between event start and end date is greater than 1, do stuff
+						if (difference > 1) {
+							for (int i = 0; i < difference; i++) {
+								// If the day doesn't already contain events
+								if (!eventsOnDay.ContainsKey(adjustedStart.AddDays(i))) {
+									// Create a new list of EventInfos
+									eventsOnDay.Add(adjustedStart.AddDays(i), new List<EventInfo>());
+								}
 
-
-					// If the date doesn't is in a bad form, fix it
-					if (String.IsNullOrEmpty(start)) {
-						start = e.Start.Date;
-					}
-
-					if (String.IsNullOrEmpty(end)) {
-						end = e.End.Date;
-					}
-
-					DateTime adjustedStart = DateTime.Parse(start);
-					DateTime adjustedEnd = DateTime.Parse(end);
-
-					//Debug.Log("Event: " + e.Summary + " Start: " + adjustedStart + " End: " + adjustedEnd + " Total Days: " + Mathf.Abs((adjustedStart - adjustedEnd).Days));
-					//Debug.Log();
-
-
-					//Debug.Log("Title: " + e.Summary + " | Start: " + adjustedStart + " | End: " + end);
-
-
-
-					/*
-					if (!eventsOnDay.ContainsKey(adjustedEnd)) {
-						eventsOnDay.Add(adjustedEnd, new List<EventInfo>());
-
-					}*/
-					int difference = Mathf.Abs((adjustedStart - adjustedEnd).Days);
-
-					// If difference between event start and end date is greater than 1, do stuff
-					if (difference > 1) {
-						for (int i = 0; i < difference; i++) {
+								eventsOnDay[adjustedStart.AddDays(i)].Add(new EventInfo(events.Summary, e));
+							}
+						} else {
 							// If the day doesn't already contain events
-							if (!eventsOnDay.ContainsKey(adjustedStart.AddDays(i))) {
+							if (!eventsOnDay.ContainsKey(adjustedStart)) {
 								// Create a new list of EventInfos
-								eventsOnDay.Add(adjustedStart.AddDays(i), new List<EventInfo>());
+								eventsOnDay.Add(adjustedStart, new List<EventInfo>());
 							}
 
-							eventsOnDay[adjustedStart.AddDays(i)].Add(new EventInfo(events.Summary, e));
-						}
-					} else {
-						// If the day doesn't already contain events
-						if (!eventsOnDay.ContainsKey(adjustedStart)) {
-							// Create a new list of EventInfos
-							eventsOnDay.Add(adjustedStart, new List<EventInfo>());
+							// Insert into the event list given a date
+							eventsOnDay[adjustedStart].Add(new EventInfo(events.Summary, e));
 						}
 
-						// Insert into the event list given a date
-						eventsOnDay[adjustedStart].Add(new EventInfo(events.Summary, e));
 					}
 
-					
-					//eventsOnDay[adjustedEnd].Add(new EventInfo(events.Summary, e));
+				} else {
+					Debug.Log("No upcoming events found.");
 				}
-
-			} else {
-				Debug.Log("No upcoming events found.");
 			}
-
-			
 		}
-
-		generated = true;
 	}
 
 	public void JumpToday() {
 		desiredDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
 
 		RefreshCalendar(false);
-		
+
 		DisplayCalendar();
 	}
 
@@ -354,7 +355,7 @@ public class Calendar : MonoBehaviour {
 
 		if (eventsOnDay.ContainsKey(date)) {
 			// Set the starting hue to 20 degrees
-			float h = 20;
+			float hueShift = 20;
 
 			foreach (EventInfo e in eventsOnDay[date]) {
 				// Create a new information item
@@ -364,11 +365,17 @@ public class Calendar : MonoBehaviour {
 				// Add an event listener when the information item is clicked, passing in its current index
 				item.GetComponent<Button>().onClick.AddListener(() => DisplayEventDetails(date, item.transform.GetSiblingIndex()));
 
-				// TODO: Fix the hue after the 8th element
-				Debug.Log(((date.Month - 1) * 30f + h) / 360f);
+				// Convert the current month into a hue
+				float hue = ((date.Month - 1) * 30f + hueShift) / 360f;
+
+				// Clamp the hue from 0 to 1
+				if (hue >= 1)
+					hue--;
+
 				// Set its color based off of the current month
-				item.GetComponent<Image>().color = Color.HSVToRGB(((date.Month - 1) * 30f + h) / 360f, 0.6f, 0.78f);
-				h += 15;
+				item.GetComponent<Image>().color = Color.HSVToRGB(hue, 0.6f, 0.78f);
+
+				hueShift += 15;
 			}
 		}
 	}
@@ -420,19 +427,20 @@ public class Calendar : MonoBehaviour {
 		eventPanel.eventDateBG.color = Color.HSVToRGB((day.Month - 1) * 30f / 360f, 0.6f, 0.78f);
 	}
 
-	internal IEnumerator LoadCalendar() {
+	internal IEnumerator LoadCalendar(bool clearAll) {
 		bool done = false;
+		loadingPanel.SetActive(true);
 
-		RefreshCalendar(true);
 		new Thread(() => {
 			PopulateCalendar();
 			done = true;
 		}).Start();
-		
+
 		while (!done)
 			yield return null;
 
 		loadingPanel.SetActive(false);
+		RefreshCalendar(false);
 		DisplayCalendar();
 	}
 

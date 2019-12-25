@@ -13,8 +13,11 @@ public class SettingsPanel : MonoBehaviour {
 		// Hides the interface
 		gameObject.SetActive(false);
 
+		calendar.RefreshEventList();
 		// Refreshes all the events
-		calendar.StartCoroutine(calendar.LoadCalendar());
+		calendar.RefreshCalendar(true);
+		calendar.DisplayCalendar();
+		calendar.StartCoroutine(calendar.LoadCalendar(true));
 
 		loadingPanel.SetActive(true);
 		

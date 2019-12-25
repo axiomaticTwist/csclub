@@ -247,10 +247,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 79d56eb970ba7e244814bd537b33eacd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  infoPrefab: {fileID: 4842411274855571665, guid: 500b89e940d2df74f8b8668818e33f1b,
-    type: 3}
-  calendar: {fileID: 2112165491}
-  eventPanel: {fileID: 1835295428}
 --- !u!1 &85853396
 GameObject:
   m_ObjectHideFlags: 0
@@ -286,8 +282,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 45}
+  m_SizeDelta: {x: 0, y: -90}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &85853398
 MonoBehaviour:
@@ -976,10 +972,10 @@ RectTransform:
   m_Father: {fileID: 909467640}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.5}
-  m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: -750, y: 0}
-  m_SizeDelta: {x: -1500, y: 134.4}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: -1000, y: 0}
+  m_SizeDelta: {x: -2000, y: 0.3999939}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &346383848
 MonoBehaviour:
@@ -2929,7 +2925,6 @@ GameObject:
   m_Component:
   - component: {fileID: 961869111}
   - component: {fileID: 961869110}
-  - component: {fileID: 961869109}
   - component: {fileID: 961869112}
   m_Layer: 0
   m_Name: Main Camera
@@ -2938,14 +2933,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!81 &961869109
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 961869108}
-  m_Enabled: 1
 --- !u!20 &961869110
 Camera:
   m_ObjectHideFlags: 0
@@ -3012,26 +2999,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 961869108}
   m_Enabled: 0
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3ad0009a831bacb488c21a68304fe323, type: 3}
+  m_Script: {fileID: 11500000, guid: a4670845db980c546ac549d8576ca6d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  calendarItemPrefab: {fileID: 8600345018410937700, guid: 1e4e15493a1d3ea41b69a5f43ecc1acb,
-    type: 3}
-  calendarsPanel: {fileID: 1798098846}
-  calendars:
-  - check: 1
-    name: 3a0qhm7bbojktseqv6779snb8k@group.calendar.google.com
-  - check: 1
-    name: fflhe61fpl3jtv5dcbutjkb1bk@group.calendar.google.com
-  - check: 1
-    name: en.usa#holiday@group.v.calendar.google.com
-  - check: 1
-    name: ilvea2g7am13gdvdl15q3qj8ig@group.calendar.google.com
-  - check: 1
-    name: kcpcna3nso47hab56hpkae9as0@group.calendar.google.com
-  - check: 1
-    name: fqip7cj1n3dj1bqb61mgigkcuo@group.calendar.google.com
-  calendarNames: []
 --- !u!1 &969839835
 GameObject:
   m_ObjectHideFlags: 0
@@ -3537,6 +3507,7 @@ GameObject:
   - component: {fileID: 1174809488}
   - component: {fileID: 1174809490}
   - component: {fileID: 1174809489}
+  - component: {fileID: 1174809491}
   m_Layer: 5
   m_Name: Month Holder
   m_TagString: Untagged
@@ -3592,6 +3563,24 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1174809487}
   m_CullTransparentMesh: 0
+--- !u!114 &1174809491
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1174809487}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e98351d478aa1f04595f06a7797854a8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  month0: {fileID: 1185595450}
+  month2: {fileID: 1535562500}
+  titleBar: {fileID: 909467640}
+  monthYear0: {fileID: 346383847}
+  monthYear1: {fileID: 2136845405}
+  monthYear2: {fileID: 2095155246}
 --- !u!1 &1183938048
 GameObject:
   m_ObjectHideFlags: 0
@@ -5497,7 +5486,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   calendar: {fileID: 2112165492}
-  getInfo: {fileID: 83460306}
   loadingPanel: {fileID: 85853396}
 --- !u!1 &1803437387
 GameObject:
@@ -6435,7 +6423,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2026774096}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 961869112}
+        m_MethodName: LoadTiles
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &2026774096
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6577,10 +6576,10 @@ RectTransform:
   m_Father: {fileID: 909467640}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.5}
-  m_AnchorMax: {x: 1, y: 0.5}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 750, y: 0}
-  m_SizeDelta: {x: -1500, y: 134}
+  m_SizeDelta: {x: -1500, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2095155247
 MonoBehaviour:
@@ -6703,7 +6702,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2108766929}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 961869112}
+        m_MethodName: LoadHome
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &2108766929
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6752,7 +6762,6 @@ GameObject:
   - component: {fileID: 2112165489}
   - component: {fileID: 2112165488}
   - component: {fileID: 2112165487}
-  - component: {fileID: 2112165491}
   - component: {fileID: 2112165492}
   m_Layer: 5
   m_Name: Canvas
@@ -6844,31 +6853,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!114 &2112165491
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2112165486}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a49a4801e279c324cb9ea588f244fad5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  dayPrefab: {fileID: 5612161870295968109, guid: bb5017d5dcd2a194697039a92ad0da51,
-    type: 3}
-  weeks:
-  - {fileID: 629663559}
-  - {fileID: 1845735715}
-  - {fileID: 969839836}
-  - {fileID: 704492279}
-  - {fileID: 1923615085}
-  - {fileID: 185492225}
-  boldFont: {fileID: 12800000, guid: d072af9780852534880f3bf40699b149, type: 3}
-  monthText: {fileID: 2136845406}
-  calendar: {fileID: 961869112}
-  title: {fileID: 909467641}
 --- !u!114 &2112165492
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6883,15 +6867,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   calendars:
   - url: 3a0qhm7bbojktseqv6779snb8k@group.calendar.google.com
-    useCalendar: 0
+    useCalendar: 1
   - url: fflhe61fpl3jtv5dcbutjkb1bk@group.calendar.google.com
-    useCalendar: 0
+    useCalendar: 1
   - url: en.usa#holiday@group.v.calendar.google.com
-    useCalendar: 0
+    useCalendar: 1
   - url: ilvea2g7am13gdvdl15q3qj8ig@group.calendar.google.com
     useCalendar: 1
   - url: kcpcna3nso47hab56hpkae9as0@group.calendar.google.com
-    useCalendar: 0
+    useCalendar: 1
   dayPrefab: {fileID: 5612161870295968108, guid: bb5017d5dcd2a194697039a92ad0da51,
     type: 3}
   months:
@@ -7038,10 +7022,10 @@ RectTransform:
   m_Father: {fileID: 909467640}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.5}
-  m_AnchorMax: {x: 1, y: 0.5}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -1500, y: 134}
+  m_SizeDelta: {x: -1500, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2136845406
 MonoBehaviour:

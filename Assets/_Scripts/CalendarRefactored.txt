@@ -1,0 +1,75 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using Google.Apis.Calendar.v3;
+using Google.Apis.Calendar.v3.Data;
+using Google.Apis.Services;
+using System;
+
+public class CalendarRefactored : MonoBehaviour {
+	static string[] Scopes = { CalendarService.Scope.CalendarReadonly };
+	static string ApplicationName = "CSClub Project";
+
+	public CalendarURL[] calendars;
+
+
+	// Create Google Calendar API service.
+	CalendarService service = new CalendarService(new BaseClientService.Initializer() {
+		ApiKey = "AIzaSyCAkCz0rjx4gw1omV7CuWR8wq_0dhKg2ww",
+		ApplicationName = ApplicationName,
+	});
+
+	// Start is called before the first frame update
+	void Start() {
+
+	}
+
+	public IEnumerator GenerateCalendarCheckboxes() {
+		foreach (CalendarURL c in calendars) {
+			EventsResource.ListRequest request = service.Events.List(c.url);
+
+			request.MaxResults = 1;
+
+			Events e = request.Execute();
+
+
+			// Create a checkbox for every calendar
+			GameObject item = Instantiate(calendarItemPrefab, calendarsPanel);
+			// Set the text of the checkbox to the name of the calendar
+			item.GetComponentInChildren<Text>().text = events.Summary;
+
+			// Add an event listener when the checkbox is ticked
+			// Update the calendar to either activate or deactivate the calendar at the given index
+			item.GetComponentInChildren<Toggle>().onValueChanged.AddListener(delegate { UpdateCalendarURL(item.GetComponentInChildren<Toggle>().isOn, item.transform.GetSiblingIndex()); });
+
+			yield return null;
+
+		}
+
+
+	}
+
+	// Threaded
+	public void PopulateCalendar() {
+		foreach (CalendarURL c in calendars) {
+			// Define parameters of request.
+			EventsResource.ListRequest request = service.Events.List(c.url);
+
+			// If the checkbox is ticked
+			if (c.useCalendar) {
+				request.TimeMin = FirstDayOfWeekUtility.GetFirstDateOfWeek(DateTime.Today.AddMonths(-1));
+				request.ShowDeleted = false;
+				request.SingleEvents = true;
+				request.MaxResults = 50;
+				request.OrderBy = EventsResource.ListRequest.OrderByEnum.StartTime;
+			} else {
+				request.MaxResults = 1;
+			}
+		}
+	}
+
+	// Update is called once per frame
+	void Update() {
+
+	}
+}
