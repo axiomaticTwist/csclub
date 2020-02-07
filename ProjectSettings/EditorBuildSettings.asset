@@ -14,7 +14,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Calendar.unity
     guid: 46ce65281e6076342a553c7e06be79e2
-  - enabled: 1
-    path: Assets/Scenes/Home.unity
+  - enabled: 0
+    path: Assets/__DELETED_GUID_Trash/382eca1323fb3b34d953cc087528494f
     guid: 382eca1323fb3b34d953cc087528494f
   m_configObjects: {}

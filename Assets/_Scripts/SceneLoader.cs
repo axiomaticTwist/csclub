@@ -14,9 +14,6 @@ public class SceneLoader : MonoBehaviour {
 	}
 
 	private void Update() {
-		if (!async.isDone) {
-			Debug.Log("Loading progress: " + async.progress * 100);
-		}
 	}
 
 	public void LoadCalendar() {
