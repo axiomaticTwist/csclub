@@ -6,6 +6,7 @@ public class CheckFirebaseDependencies : MonoBehaviour {
 	// Start is called before the first frame update
 	void Start () {
 		DontDestroyOnLoad(this);
+
 		/*
 		Firebase.FirebaseApp.CheckAndFixDependenciesAsync().ContinueWith(task => {
 			var dependencyStatus = task.Result;
@@ -30,6 +31,10 @@ public class CheckFirebaseDependencies : MonoBehaviour {
 
 		//DownloadAnnouncements.ConnectAndRetrieveTopics();
 
-		SceneManager.LoadSceneAsync(1, LoadSceneMode.Additive);
+		// If user hasn't seen the introduction
+		if (!PlayerPrefsX.GetBool("Introduction"))
+			SceneManager.LoadScene(1, LoadSceneMode.Additive);
+		else
+			SceneManager.LoadScene(2, LoadSceneMode.Additive);
 	}
 }

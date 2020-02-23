@@ -72,7 +72,7 @@ public class VisualizeCalendar : MonoBehaviour {
 		GenerateCalendarData.Instance.allEvents.Clear();
 
 		foreach (CalendarURL calendar in GenerateCalendarData.Instance.calendars) {
-			Dictionary<DateTime, List<EventInfo>> x = await GenerateCalendarData.Instance.GetCalendarEventsAsync(calendar, GenerateCalendarData.Instance.maxResults);
+			Dictionary<DateTime, List<EventInfo>> x = await GenerateCalendarData.Instance.GetCalendarEventsAsync(calendar, FirstDayOfWeekUtility.GetFirstDateOfWeek(DateTime.Now.AddMonths(-1)), GenerateCalendarData.Instance.maxResults);
 
 			CheckForEvents(x);
 		}

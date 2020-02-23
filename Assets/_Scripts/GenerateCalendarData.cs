@@ -52,7 +52,7 @@ public class GenerateCalendarData : MonoBehaviour {
 		return allEvents.ContainsKey(key);
 	}
 
-	public Task<Dictionary<DateTime, List<EventInfo>>> GetCalendarEventsAsync(CalendarURL c, int maxResults) {
+	public Task<Dictionary<DateTime, List<EventInfo>>> GetCalendarEventsAsync(CalendarURL c, DateTime timeMin, int maxResults) {
 		return Task.Run(() => {
 			Dictionary<DateTime, List<EventInfo>> calendarEvents = new Dictionary<DateTime, List<EventInfo>>();
 
@@ -65,7 +65,7 @@ public class GenerateCalendarData : MonoBehaviour {
 				ListRequest request = service.Events.List(c.url);
 
 				// Create a request for events starting from previous month onward, until 200 events have been added
-				request.TimeMin = DateTime.Now.AddMonths(-1);
+				request.TimeMin = timeMin;
 				request.ShowDeleted = false;
 				request.SingleEvents = true;
 				request.MaxResults = maxResults;
