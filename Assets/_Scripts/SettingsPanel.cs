@@ -1,25 +1,27 @@
 ﻿using UnityEngine;
+using System;
+using System.Linq;
 
 public class SettingsPanel : MonoBehaviour {
-	public Calendar calendar;
+	public VisualizeCalendar calendar;
 	public GameObject loadingPanel;
+	private CalendarURL[] calendars;
 
-	public void Show() {
-		gameObject.SetActive(true);
+	public void Open() {
+		calendars = new CalendarURL[GenerateCalendarData.Instance.calendars.Length];
+		Array.Copy(GenerateCalendarData.Instance.calendars, calendars, GenerateCalendarData.Instance.calendars.Length);
+
 	}
 
 	// Called on button pressed
 	public void Exit() {
-		// Hides the interface
-		gameObject.SetActive(false);
+		if (!Enumerable.SequenceEqual(GenerateCalendarData.Instance.calendars, calendars)) {
+			Debug.Log("Refresh");
+			GenerateCalendarData.Instance.ClearAllEvents();
+			calendar.RefreshCalendar();
+			calendar.PopulateCalendar();
+		}
 
-		calendar.RefreshEventList();
-		// Refreshes all the events
-		calendar.RefreshCalendar(true);
-		calendar.DisplayCalendar();
-		calendar.StartCoroutine(calendar.LoadCalendar(true));
-
-		loadingPanel.SetActive(true);
-		
+		PlayerPrefs.Save();
 	}
 }

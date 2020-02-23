@@ -5,6 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+// TODO: Subscribe to announcements
 public class CreateAnnouncements : MonoBehaviour {
 	List<AnnouncementEntry> entries = new List<AnnouncementEntry>();
 	public Transform contentPanel;
@@ -13,24 +14,21 @@ public class CreateAnnouncements : MonoBehaviour {
 	public GameObject announcementPanel;
 	public Text announcementsTitleText;
 
-	// Start is called before the first frame update
-	void Start() {
-		RetrieveAnnouncements();
-	}
-
-	public void RetrieveAnnouncements() {
+	public void GetAnnouncements() {
 		foreach (Transform child in contentPanel) {
 			Destroy(child.gameObject);
 		}
 
-		StartCoroutine(Connect());
+		if (ClientSocket.connected) 
+			StartCoroutine(RetrieveAnnouncements());
+		else Instantiate(errorPrefab, contentPanel);
 	}
 
-	public IEnumerator Connect() {
+	public IEnumerator RetrieveAnnouncements() {
 		bool done = false;
 
 		new Thread(() => {
-			entries = DownloadAnnouncements.ConnectAndRetrieveAnnouncements();
+			entries = SendAndReceive.RetrieveAnnouncements();
 			done = true;
 		}).Start();
 

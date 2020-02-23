@@ -11,6 +11,7 @@ public class BigPanelSlide : MonoBehaviour {
 
 	public void SlideOut() {
 		StartCoroutine(SlideOutDisable());
+		PlayerPrefs.Save();
 	}
 
 	IEnumerator SlideOutDisable() {

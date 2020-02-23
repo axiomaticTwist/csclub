@@ -13,7 +13,7 @@ public class CalendarScroll : MonoBehaviour, IDragHandler, IEndDragHandler {
 	public float easing = 0.5f;
 	private float dragTime = 0f;
 
-	public Calendar calendarScript;
+	public VisualizeCalendar calendarScript;
 
 	private void Start() {
 		panelLocation = transform.position;
@@ -64,6 +64,7 @@ public class CalendarScroll : MonoBehaviour, IDragHandler, IEndDragHandler {
 		}
 
 		calendarScript.AddMonths(_monthsToAdd);
+		
 
 		transform.position = panelStartLocation;
 		panelLocation = panelStartLocation;
