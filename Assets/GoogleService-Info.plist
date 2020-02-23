@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>457052220427-nh21q1vkltp5qj72ths1d2vsms23trkl.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.457052220427-nh21q1vkltp5qj72ths1d2vsms23trkl</string>
+	<key>API_KEY</key>
+	<string>AIzaSyBqrFX39kI9WxshZrGLghUSFpir0vt5VGk</string>
+	<key>GCM_SENDER_ID</key>
+	<string>457052220427</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.CSClub.Insight</string>
+	<key>PROJECT_ID</key>
+	<string>insight-c673a</string>
+	<key>STORAGE_BUCKET</key>
+	<string>insight-c673a.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:457052220427:ios:807dcc5c2af9d349d2eb0e</string>
+	<key>DATABASE_URL</key>
+	<string>https://insight-c673a.firebaseio.com</string>
+</dict>
+</plist>

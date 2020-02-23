@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "457052220427",
+    "firebase_url": "https://insight-c673a.firebaseio.com",
+    "project_id": "insight-c673a",
+    "storage_bucket": "insight-c673a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:457052220427:android:0c459b09bf3822bbd2eb0e",
+        "android_client_info": {
+          "package_name": "com.CSClub.Insight"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "457052220427-ttmmrq4iqeng2usqspuc8eb6er43c8h7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBWSIXgYOf1yRAT7DsEfWD9hC0as8o-j7I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "457052220427-ttmmrq4iqeng2usqspuc8eb6er43c8h7.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "457052220427-nh21q1vkltp5qj72ths1d2vsms23trkl.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.CSClub.Insight"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
