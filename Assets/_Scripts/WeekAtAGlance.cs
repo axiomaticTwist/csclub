@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections;
-using System.Globalization;
-using System.Threading;
-using static SceneLoader;
 using UnityEngine;
 using UnityEngine.UI;
-using Event = Google.Apis.Calendar.v3.Data.Event;
 using System.Collections.Generic;
 
 public class WeekAtAGlance : MonoBehaviour {
@@ -30,6 +25,18 @@ public class WeekAtAGlance : MonoBehaviour {
 		}
 
 		CheckForEvents(GenerateCalendarData.Instance.allEvents);
+	}
+
+	private void Update() {
+		if (GenerateCalendarData.Instance.eventListQueue.Count == 0) return;
+
+		lock (GenerateCalendarData.Instance.eventListQueue) {
+			foreach (var element in GenerateCalendarData.Instance.eventListQueue) {
+				CheckForEvents(element);
+			}
+
+			GenerateCalendarData.Instance.eventListQueue.Clear();
+		}
 	}
 
 	private void GenerateWeek() {

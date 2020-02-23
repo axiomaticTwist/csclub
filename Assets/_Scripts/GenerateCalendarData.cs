@@ -16,6 +16,7 @@ public class GenerateCalendarData : MonoBehaviour {
 	[Header("Calendars")]
 	public CalendarURL[] calendars;
 	public Dictionary<DateTime, List<EventInfo>> allEvents = new Dictionary<DateTime, List<EventInfo>>();
+	public Queue<Dictionary<DateTime, List<EventInfo>>> eventListQueue = new Queue<Dictionary<DateTime, List<EventInfo>>>();
 
 	// If modifying these scopes, delete your previously saved credentials
 	// at ~/.credentials/calendar-dotnet-quickstart.json
@@ -38,6 +39,18 @@ public class GenerateCalendarData : MonoBehaviour {
 
 	public void ClearAllEvents() {
 		allEvents.Clear();
+	}
+
+	public async void PopulateCalendar() {
+		allEvents.Clear();
+
+		foreach (CalendarURL calendar in calendars) {
+			Dictionary<DateTime, List<EventInfo>> x = await GetCalendarEventsAsync(calendar, FirstDayOfWeekUtility.GetFirstDateOfWeek(DateTime.Now.AddMonths(-1)), maxResults);
+
+			lock (eventListQueue) {
+				eventListQueue.Enqueue(x);
+			}
+		}
 	}
 
 	public void GenerateCalendarCheckboxes() {

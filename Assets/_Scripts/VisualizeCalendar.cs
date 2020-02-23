@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using UnityEngine;
 using UnityEngine.UI;
-using Event = Google.Apis.Calendar.v3.Data.Event;
 
 // Gets the first date in the week, given a particular day
 public static class FirstDayOfWeekUtility {
@@ -59,7 +57,7 @@ public class VisualizeCalendar : MonoBehaviour {
 		GenerateCalendar();
 
 		if (GenerateCalendarData.populateCalendar == true) {
-			PopulateCalendar();
+			GenerateCalendarData.Instance.PopulateCalendar();
 			GenerateCalendarData.populateCalendar = false;
 		}
 
@@ -68,13 +66,15 @@ public class VisualizeCalendar : MonoBehaviour {
 		GenerateCalendarCheckboxVisuals();
 	}
 
-	public async void PopulateCalendar() {
-		GenerateCalendarData.Instance.allEvents.Clear();
+	private void Update() {
+		if (GenerateCalendarData.Instance.eventListQueue.Count == 0) return;
 
-		foreach (CalendarURL calendar in GenerateCalendarData.Instance.calendars) {
-			Dictionary<DateTime, List<EventInfo>> x = await GenerateCalendarData.Instance.GetCalendarEventsAsync(calendar, FirstDayOfWeekUtility.GetFirstDateOfWeek(DateTime.Now.AddMonths(-1)), GenerateCalendarData.Instance.maxResults);
+		lock (GenerateCalendarData.Instance.eventListQueue) {
+			foreach (var element in GenerateCalendarData.Instance.eventListQueue) {
+				CheckForEvents(element);
+			}
 
-			CheckForEvents(x);
+			GenerateCalendarData.Instance.eventListQueue.Clear();
 		}
 	}
 

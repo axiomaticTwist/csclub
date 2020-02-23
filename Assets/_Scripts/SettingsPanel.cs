@@ -19,7 +19,7 @@ public class SettingsPanel : MonoBehaviour {
 			Debug.Log("Refresh");
 			GenerateCalendarData.Instance.ClearAllEvents();
 			calendar.RefreshCalendar();
-			calendar.PopulateCalendar();
+			GenerateCalendarData.Instance.PopulateCalendar();
 		}
 
 		PlayerPrefs.Save();
